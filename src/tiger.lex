@@ -1,7 +1,8 @@
 %{
 #include <string.h>
 #include "util.h"
-#include "tokens.h"
+#include "y.tab.h"
+//#include "tokens.h"
 #include "errormsg.h"
 
 const int INITIAL_STRING_LENGTH=64;
@@ -51,13 +52,13 @@ static void append_strbuf(char c)
 
 %%
  /* ignore */
-[ \t\r]	 {ADJ(); continue;}
+<INITIAL>[ \t\r]	 {ADJ(); continue;}
 
  /* new line */
-\n|\r\n	 {ADJ(); EM_newline(); continue;}
+<INITIAL>\n|\r\n	 {ADJ(); EM_newline(); continue;}
 
  /* comment */
-"/*" {ADJ(); commentDepth++;  BEGIN COMMENT; continue;}
+<INITIAL>"/*" {ADJ(); commentDepth++;  BEGIN COMMENT; continue;}
 <COMMENT>"/*"            {ADJ(); commentDepth++;}
 <COMMENT>"*/"            {ADJ(); if (--commentDepth == 0) BEGIN(INITIAL);}
 <COMMENT>(\n|\r\n)	     {ADJ(); EM_newline();}
@@ -65,23 +66,23 @@ static void append_strbuf(char c)
 <COMMENT>.               {ADJ();}
 
  /* keywords */
-"array"       {ADJ(); return ARRAY;}
-"break"       {ADJ(); return BREAK;}
-"do"          {ADJ(); return DO;}
-"else"        {ADJ(); return ELSE;}
-"end"         {ADJ(); return END;}
-"for"         {ADJ(); return FOR;}
-"function"    {ADJ(); return FUNCTION;}
-"if"          {ADJ(); return IF;}
-"in"          {ADJ(); return IN;}
-"let"         {ADJ(); return LET;}
-"nil"         {ADJ(); return NIL;}
-"of"          {ADJ(); return OF;}
-"then"        {ADJ(); return THEN;}
-"to"          {ADJ(); return TO;}
-"type"        {ADJ(); return TYPE;}
-"var"         {ADJ(); return VAR;}
-"while"       {ADJ(); return WHILE;}
+<INITIAL>array       {ADJ(); return ARRAY;}
+<INITIAL>break       {ADJ(); return BREAK;}
+<INITIAL>do          {ADJ(); return DO;}
+<INITIAL>else        {ADJ(); return ELSE;}
+<INITIAL>end         {ADJ(); return END;}
+<INITIAL>for         {ADJ(); return FOR;}
+<INITIAL>function    {ADJ(); return FUNCTION;}
+<INITIAL>if          {ADJ(); return IF;}
+<INITIAL>in          {ADJ(); return IN;}
+<INITIAL>let         {ADJ(); return LET;}
+<INITIAL>nil         {ADJ(); return NIL;}
+<INITIAL>of          {ADJ(); return OF;}
+<INITIAL>then        {ADJ(); return THEN;}
+<INITIAL>to          {ADJ(); return TO;}
+<INITIAL>type        {ADJ(); return TYPE;}
+<INITIAL>var         {ADJ(); return VAR;}
+<INITIAL>while       {ADJ(); return WHILE;}
 
  /* identifier */
 [a-zA-Z][a-zA-Z0-9_]*   {ADJ(); yylval.sval=String(yytext); return ID;}
@@ -131,4 +132,4 @@ static void append_strbuf(char c)
 <STR>[^\n\t\\\"]+ {ADJ();  for(int i=0; i < yyleng; i++) append_strbuf(yytext[i]); }
 <STR>.    {ADJ(); EM_error(EM_tokPos,"illegal token");}
 
-.         {ADJ(); EM_error(EM_tokPos,"illegal token");}
+<INITIAL>.         {ADJ(); EM_error(EM_tokPos,"illegal token");}

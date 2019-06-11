@@ -1,12 +1,14 @@
 %{
 #include <stdio.h>
-#include "util.h"
 #include "errormsg.h"
+#include "util.h"
 
-int yylex(void); /* function prototype */
+int yylex(void);
 
-void yyerror(char *s) {
-  EM_error(EM_tokPos, "%s", s);
+/* parse error */
+void yyerror(char *s)
+{
+ EM_error(EM_tokPos, "%s", s);
 }
 
 %}
@@ -15,35 +17,28 @@ void yyerror(char *s) {
 	int pos;
 	int ival;
 	string sval;
-  }
+	}
+
+%token <sval> ID STRING
+%token <ival> INT
+
+%token
+COMMA COLON SEMICOLON LPAREN
+RPAREN LBRACK RBRACK LBRACE RBRACE DOT PLUS
+MINUS TIMES DIVIDE EQ NEQ LT LE GT GE
+AND OR ASSIGN ARRAY IF THEN ELSE WHILE FOR
+TO DO LET IN END OF BREAK NIL FUNCTION
+VAR TYPE
 
 %nonassoc LOW
-%nonassoc TYPE FUNCTION
-%nonassoc ID
-%nonassoc LBRACK
-%nonassoc DO OF
-%nonassoc THEN
-%nonassoc ELSE
-%left SEMICOLON
+%nonassoc LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE
 %nonassoc ASSIGN
 %left OR
 %left AND
 %nonassoc EQ NEQ LT LE GT GE
 %left PLUS MINUS
 %left TIMES DIVIDE
-%left UMINUS
-
-%token <sval> ID STRING
-%token <ival> INT
-
-%token
-  COMMA COLON SEMICOLON LPAREN RPAREN LBRACK RBRACK
-  LBRACE RBRACE DOT
-  PLUS MINUS TIMES DIVIDE EQ NEQ LT LE GT GE
-  AND OR ASSIGN
-  ARRAY IF THEN ELSE WHILE FOR TO DO LET IN END OF
-  BREAK NIL
-  FUNCTION VAR TYPE
+%left UMINUS /*precedence for unary minus */
 
 %start program
 
@@ -149,22 +144,30 @@ ty          : ID
             | arrTy
             | recTy
 
-arrTy:      ARRAY OF ID
 
-recTy:   LBRACE fieldDecs RBRACE
-      | LBRACE RBRACE
+arrTy       : ARRAY OF ID
 
-fieldDecs : fieldDec
-          | fieldDec COMMA fieldDecs
-fieldDec : ID COLON ID
+recTy       : LBRACE fieldDecs RBRACE
+            | LBRACE RBRACE
 
-funDec : FUNCTION ID LPAREN fieldDecs RPAREN EQ exp
-       | FUNCTION ID LPAREN RPAREN EQ exp
-       | FUNCTION ID LPAREN fieldDecs RPAREN COLON ID EQ exp
-       | FUNCTION ID LPAREN RPAREN COLON ID EQ exp
 
-varDec : VAR ID ASSIGN exp
-        | VAR ID COLON ID ASSIGN exp
-lValue : ID | subscript | fieldExp
-subscript : lValue LBRACK exp RBRACK
-fieldExp : lValue DOT ID
+fieldDecs   : fieldDec
+            | fieldDec COMMA fieldDecs
+
+
+fieldDec    : ID COLON ID
+
+funDec      : FUNCTION ID LPAREN fieldDecs RPAREN EQ exp
+            | FUNCTION ID LPAREN RPAREN EQ exp
+            | FUNCTION ID LPAREN fieldDecs RPAREN COLON ID EQ exp
+            | FUNCTION ID LPAREN RPAREN COLON ID EQ exp
+
+varDec      : VAR ID ASSIGN exp
+            | VAR ID COLON ID ASSIGN exp
+lValue      : ID
+            | subscript
+            | fieldExp
+
+subscript   : lValue LBRACK exp RBRACK
+
+fieldExp    : lValue DOT ID
