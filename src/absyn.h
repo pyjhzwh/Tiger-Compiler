@@ -1,3 +1,4 @@
+
 /*
  * absyn.h - Abstract Syntax Header (Chapter 4)
  *
@@ -6,6 +7,10 @@
  */
 
 /* Type Definitions */
+#include "symbol.h"
+
+#ifndef ABSYN_H__
+#define ABSYN_H__
 
 typedef int A_pos;
 
@@ -62,7 +67,7 @@ struct A_exp_
 	    } u;
      };
 
-struct A_dec_ 
+struct A_dec_
     {enum {A_functionDec, A_varDec, A_typeDec} kind;
      A_pos pos;
      union {A_fundecList function;
@@ -86,7 +91,7 @@ struct A_field_ {S_symbol name, typ; A_pos pos; bool escape;};
 struct A_fieldList_ {A_field head; A_fieldList tail;};
 struct A_expList_ {A_exp head; A_expList tail;};
 struct A_fundec_ {A_pos pos;
-                 S_symbol name; A_fieldList params; 
+                 S_symbol name; A_fieldList params;
 		 S_symbol result; A_exp body;};
 
 struct A_fundecList_ {A_fundec head; A_fundecList tail;};
@@ -133,3 +138,4 @@ A_namety A_Namety(S_symbol name, A_ty ty);
 A_nametyList A_NametyList(A_namety head, A_nametyList tail);
 A_efield A_Efield(S_symbol name, A_exp exp);
 A_efieldList A_EfieldList(A_efield head, A_efieldList tail);
+#endif

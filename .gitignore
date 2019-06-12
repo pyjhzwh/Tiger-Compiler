@@ -1,2 +1,5 @@
 *.o
+*.output
 lextest
+parsetest
+absyntest

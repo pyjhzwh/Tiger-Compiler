@@ -144,14 +144,28 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 14 "tiger.y" /* yacc.c:1909  */
+#line 19 "tiger.y" /* yacc.c:1909  */
 
 	int pos;
 	int ival;
 	string sval;
+  A_var var;
+  A_exp exp;
+  A_dec dec;
+  A_ty ty;
+  A_decList decList;
+  A_expList expList;
+  A_field field;
+  A_fieldList fieldList;
+  A_fundec fundec;
+  A_fundecList fundecList;
+  A_namety namety;
+  A_nametyList nametyList;
+  A_efield efield;
+  A_efieldList efieldList;
   
 
-#line 155 "y.tab.h" /* yacc.c:1909  */
+#line 169 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
