@@ -1,6 +1,6 @@
 # variable
 OBJECTS = lex.yy.o y.tab.o errormsg.o util.o absyn.o prabsyn.o symbol.o \
-          table.o parse.o
+          table.o parse.o semant.o env.o types.o
 
 # executable
 all: lextest parsetest absyntest
@@ -23,6 +23,9 @@ prabsyn.o: prabsyn.c prabsyn.h util.h absyn.h
 symbol.o: symbol.c symbol.h util.h table.h
 table.o: table.c table.h util.h
 parse.o: parse.c parse.h util.h errormsg.h symbol.h absyn.h
+types.o: types.c types.h
+env.o: env.c env.h
+semant.o: semant.c semant.h
 
 # lex
 lextest.o: lextest.c absyn.h symbol.h y.tab.h errormsg.h util.h
